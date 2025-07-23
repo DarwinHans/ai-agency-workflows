@@ -1,0 +1,238 @@
+{
+  "name": "Lector insights reunion",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1w9SU8UjbKWfWPRgmRnvy2iIv7deLissxj11Ler3PF5M",
+          "mode": "list",
+          "cachedResultName": "Notes / Bitacora",
+          "cachedResultUrl": "https://docs.google.com/document/d/1w9SU8UjbKWfWPRgmRnvy2iIv7deLissxj11Ler3PF5M/edit?usp=drivesdk"
+        },
+        "binaryPropertyName": "=data ",
+        "options": {
+          "googleFileConversion": {}
+        }
+      },
+      "id": "2e3ab2e1-2bc8-448e-a88a-47aadd21c149",
+      "name": "Google Drive - Descargar Doc",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Y0bKCL3TtewmAvul",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1gkqJjFLw5nuVM4RWe-qKujZXtzKL4WmMGiWZepAVDC8",
+          "mode": "list",
+          "cachedResultName": "Insights Generados",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gkqJjFLw5nuVM4RWe-qKujZXtzKL4WmMGiWZepAVDC8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Resultados IA",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gkqJjFLw5nuVM4RWe-qKujZXtzKL4WmMGiWZepAVDC8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Insights": "={{$json[\"message\"][\"content\"]}}\n"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Documento",
+              "displayName": "Documento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resumen Ejecutivo",
+              "displayName": "Resumen Ejecutivo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Insights",
+              "displayName": "Insights",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "5b663ad2-08b7-4339-a22f-d958cf64cbb8",
+      "name": "Guardar en Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        720,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BdhNJBQs0iH4rgdN",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        0
+      ],
+      "id": "05081314-36ed-4fab-bab3-feb34c175e2a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1w9SU8UjbKWfWPRgmRnvy2iIv7deLissxj11Ler3PF5M/edit?tab=t.0#heading=h.72hpetlqlftg"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ],
+      "id": "1c19aed1-86e1-49db-b8e3-cf66c1f15dba",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "x3OqOaJci19TILkM",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=\"Resume y extrae insights clave del siguiente texto como si fueras un analista de datos para una reunión ejecutiva:\\n\\n\" + $json[\"content\"]\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        380,
+        0
+      ],
+      "id": "1f2673a5-7bbd-4c03-bac3-f7a41efbbe43",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "fzOm6JcQcFZTx1gq",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive - Descargar Doc": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Drive - Descargar Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Guardar en Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6062d0a5-e29a-40b5-b944-74b0af9dd3b8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "abaf886a599ddc06e1c6c6ef427814ad53a570a178e633dea05a8e4e6095ec22"
+  },
+  "id": "a3LZybqrTMg1PzRN",
+  "tags": []
+}
